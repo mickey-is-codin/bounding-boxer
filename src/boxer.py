@@ -50,6 +50,8 @@ def compare_paths(full_path, subset_path):
 
 def scroll_images(img_paths):
 
+    # Scroll through all images to be labeled
+
     img_paths = iter(img_paths)
 
     img_path = str(next(img_paths))
