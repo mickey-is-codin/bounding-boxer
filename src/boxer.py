@@ -56,7 +56,7 @@ def scroll_images(img_paths):
     unlabeled_img = cv2.imread(img_path, 1)
 
     while True:
-        cv2.imshow(str(img_path), unlabeled_img)
+        cv2.imshow(img_path, unlabeled_img)
 
         user_key = cv2.waitKey(33)
         if user_key == 27 or user_key == 113:
