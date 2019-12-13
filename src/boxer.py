@@ -1,4 +1,5 @@
 import os
+import sys
 import cv2
 
 from pathlib import Path
@@ -47,17 +48,23 @@ def read_image_directory(data_path):
 def compare_paths(full_path, subset_path):
     return list(set(full_path) - set(subset_path))
 
-def scroll_images(image_paths):
-    for image_path in image_paths:
-        print(image_path)
-        unlabeled_image = cv2.imread(image_path, 0)
+def scroll_images(img_paths):
 
-        print(type(unlabeled_image))
+    img_paths = iter(img_paths)
 
-        cv2.imshow(unlabeled_image, image_path)
+    img_path = str(next(img_paths))
+    unlabeled_img = cv2.imread(img_path, 1)
 
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+    while True:
+        cv2.imshow(str(img_path), unlabeled_img)
+
+        user_key = cv2.waitKey(33)
+        if user_key == 27 or user_key == 113:
+            sys.exit(0)
+        elif user_key == 13:
+            img_path = str(next(img_paths))
+            unlabeled_img = cv2.imread(img_path)
 
 if __name__ == "__main__":
     main()
+tp11_supine_0_none.png
