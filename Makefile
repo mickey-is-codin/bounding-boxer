@@ -1,7 +1,10 @@
+# Python Program
 PY=python3
 
+# Source Files
 BOX_SRC=src/boxer.py
 
+# Result Directories
 RESULTS_ROOT=results/
 BOX_RESULTS=results/box-results/
 
