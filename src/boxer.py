@@ -18,6 +18,7 @@ def main():
     print(f"Prelabeled images: {len(labeled_paths)}")
     print(f"To be labelled: {len(todo_paths)}")
 
+    scroll_images(todo_paths)
 
 def touch_results_file(output_path):
     if not os.path.exists(output_path):
@@ -39,13 +40,24 @@ def read_image_directory(data_path):
     paths = []
     for path in os.listdir(data_path):
         if path[-4:] == ".png":
-            paths.append(path)
+            paths.append(data_path/path)
 
     return paths
 
 def compare_paths(full_path, subset_path):
     return list(set(full_path) - set(subset_path))
 
+def scroll_images(image_paths):
+    for image_path in image_paths:
+        print(image_path)
+        unlabeled_image = cv2.imread(image_path, 0)
+
+        print(type(unlabeled_image))
+
+        cv2.imshow(unlabeled_image, image_path)
+
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
 if __name__ == "__main__":
     main()
