@@ -13,10 +13,12 @@ num_labeled = 0
 def main():
     print("\n\nWelcome to Bounding Boxer\n\n")
 
+    setup_directories()
+
     name = input("Please enter your first name: ")
 
     img_dir     = Path("data/sacral-labeling-template/avg-heatmaps")
-    output_path = Path(f"results/box-results/{name.lower()}_bounding_boxes.csv")
+    output_path = Path(f"results/{name.lower()}_bounding_boxes.csv")
 
     results_exist = touch_results_file(output_path)
     all_paths     = read_image_directory(img_dir)
@@ -24,6 +26,10 @@ def main():
     todo_paths    = compare_paths(all_paths, labeled_paths)
     system_paths  = convert_paths_to_unix(img_dir, todo_paths)
     scroll_images(system_paths, output_path)
+
+def setup_directories():
+    if not os.path.isdir("results"):
+        os.mkdir("results")
 
 def touch_results_file(output_path):
     if not os.path.exists(output_path):
