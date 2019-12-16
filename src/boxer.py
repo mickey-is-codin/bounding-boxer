@@ -15,19 +15,15 @@ def main():
 
     name = input("Please enter your first name: ")
 
-    data_path   = Path("data/sacral-labeling-template/avg-heatmaps")
+    img_dir     = Path("data/sacral-labeling-template/avg-heatmaps")
     output_path = Path(f"results/box-results/{name.lower()}_bounding_boxes.csv")
 
     results_exist = touch_results_file(output_path)
-    labeled_paths = read_results_file(output_path, data_path) if results_exist else None
-    all_paths     = read_image_directory(data_path)
-    todo_paths    = compare_paths(all_paths, labeled_paths) if results_exist else all_paths
-
-    # print(f"Total images: {len(all_paths)}")
-    # print(f"Prelabeled images: {len(labeled_paths) if labeled_paths else 0}")
-    # print(f"To be labelled: {len(todo_paths)}")
-
-    scroll_images(todo_paths, output_path)
+    all_paths     = read_image_directory(img_dir)
+    labeled_paths = read_results_file(output_path, img_dir) if results_exist else None
+    todo_paths    = compare_paths(all_paths, labeled_paths)
+    system_paths  = convert_paths_to_unix(img_dir, todo_paths)
+    scroll_images(system_paths, output_path)
 
 def touch_results_file(output_path):
     if not os.path.exists(output_path):
@@ -39,25 +35,31 @@ def touch_results_file(output_path):
         print("Welcome back!")
         return True
 
-def read_results_file(output_path, data_path):
+def read_results_file(output_path, img_dir):
     paths = []
     with open(output_path, 'r') as existing_results_file:
         next(existing_results_file)
         for line in existing_results_file.readlines():
-            paths.append(data_path/line.split(",")[0].split("/")[-1])
+            paths.append(line.split(",")[0])
 
     return paths
 
-def read_image_directory(data_path):
+def read_image_directory(img_dir):
     paths = []
-    for path in os.listdir(data_path):
+    for path in os.listdir(img_dir):
         if path[-4:] == ".png":
-            paths.append(data_path/path)
+            paths.append(path)
 
     return paths
 
 def compare_paths(full_path, subset_path):
-    return list(set(full_path) - set(subset_path))
+    if not subset_path:
+        return list(set(full_path))
+    else:
+        return list(set(full_path) - set(subset_path))
+
+def convert_paths_to_unix(img_dir, img_filenames):
+    return [Path(img_dir, img_filename) for img_filename in img_filenames]
 
 def scroll_images(img_paths, output_path):
     global cropping, bbox, bbox_exists, num_labeled
@@ -120,7 +122,7 @@ def save_bbox_to_csv(csv_path, img_path, num_images):
     global bbox, num_labeled
     print(f"\nSaved {img_path.split('/')[-1]} bounding box")
     print(f"{num_images - num_labeled - 1} images left to label")
-    write_string = f"{img_path},{bbox[0][0]},{bbox[0][1]},{bbox[1][0]},{bbox[1][1]}\n"
+    write_string = f"{img_path.split('/')[-1]},{bbox[0][0]},{bbox[0][1]},{bbox[1][0]},{bbox[1][1]}\n"
     with open(csv_path, "a") as bbox_file:
         bbox_file.write(write_string)
 
