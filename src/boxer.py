@@ -28,8 +28,8 @@ def main():
     scroll_images(system_paths, output_path)
 
 def setup_directories():
-    if not os.path.isdir("results"):
-        os.mkdir("results")
+    if not os.path.isdir("../results"):
+        os.mkdir("../results")
 
 def touch_results_file(output_path):
     if not os.path.exists(output_path):
